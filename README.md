@@ -36,7 +36,7 @@ PLAN.md                 the rewrite plan and its phases
 ## Getting started
 
 ```sh
-nix flake init -t github:alexanderjerome/pve-community-nix#consumer
+nix flake init -t github:alexanderjerome/pve-community-nix/nix#consumer
 # edit fleet/*.nix (providers, network, settings) and fleet/hosts/*.nix
 fleet deploy tf apply home-media        # provision the container(s)
 fleet deploy nixos apply host jellyfin  # deploy NixOS onto it

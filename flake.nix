@@ -21,7 +21,7 @@
   #   imports = [ (catalog.lib.mkApp { app = "jellyfin"; compute = { vm_id = 120; … }; }) ];
 
   inputs = {
-    fleetkit.url = "git+https://github.com/alexanderjerome/fleetkit?ref=claude/proxmox-nix-rewrite-plan-qx16ru&shallow=1";
+    fleetkit.url = "github:alexanderjerome/fleetkit";
     nixpkgs.follows = "fleetkit/nixpkgs";
   };
 

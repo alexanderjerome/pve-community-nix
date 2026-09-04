@@ -21,5 +21,5 @@ runtime downloads from `main`.
 Start from the consumer template:
 
 ```sh
-nix flake init -t github:alexanderjerome/pve-community-nix#consumer
+nix flake init -t github:alexanderjerome/pve-community-nix/nix#consumer
 ```

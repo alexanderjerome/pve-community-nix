@@ -89,19 +89,17 @@
         "terranix": "terranix"
       },
       "locked": {
-        "lastModified": 1788560612,
-        "narHash": "sha256-pofkmpXOXvdrABO6ctArJ7FO3Tr1tloJ4c8+YS2DnpA=",
-        "ref": "claude/proxmox-nix-rewrite-plan-qx16ru",
-        "rev": "34189182bf9c4d978eb2883a0bd2cb20740f1339",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/alexanderjerome/fleetkit"
+        "lastModified": 1788561646,
+        "narHash": "sha256-ACQhV8BpAuw50++Kbc17y76LekJdtG+2SPxONEZWUkI=",
+        "owner": "alexanderjerome",
+        "repo": "fleetkit",
+        "rev": "db7e3a2cf94bcb30fabc416bafdcf7b626ef1096",
+        "type": "github"
       },
       "original": {
-        "ref": "claude/proxmox-nix-rewrite-plan-qx16ru",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/alexanderjerome/fleetkit"
+        "owner": "alexanderjerome",
+        "repo": "fleetkit",
+        "type": "github"
       }
     },
     "nix-topology": {

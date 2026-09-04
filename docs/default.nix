@@ -10,7 +10,7 @@
 
 let
   catalogRoot = toString ../.;
-  githubBase = "https://github.com/alexanderjerome/pve-community-nix/blob/main";
+  githubBase = "https://github.com/alexanderjerome/pve-community-nix/blob/nix";
   fkInputs = fleetkit.inputs;
 
   eval = import (nixpkgs + "/nixos/lib/eval-config.nix") {
