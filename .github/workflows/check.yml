@@ -2,7 +2,7 @@ name: check
 on:
   pull_request:
   push:
-    branches: [ nix ]
+    branches: [ main ]
 jobs:
   flake-check:
     runs-on: ubuntu-latest

@@ -1,6 +1,6 @@
 {
   # pve-community-nix consumer. Copy with:
-  #   nix flake init -t github:alexanderjerome/pve-community-nix/nix#consumer
+  #   nix flake init -t github:alexanderjerome/pve-community-nix#consumer
   #
   # Layout:
   #   flake.nix        — this file: mkFleet wiring + output re-export
@@ -11,7 +11,7 @@
   #   nix/secrets/     — SOPS store (create with `fleet secrets init`)
 
   inputs = {
-    catalog.url = "github:alexanderjerome/pve-community-nix/nix";
+    catalog.url = "github:alexanderjerome/pve-community-nix";
     fleetkit.follows = "catalog/fleetkit";
     nixpkgs.follows = "fleetkit/nixpkgs";
   };
