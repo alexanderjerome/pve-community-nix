@@ -14,5 +14,14 @@ be written side by side with the installer they replace.
 - `tools/pve/*.sh` — hypervisor tweaks, ported to ansible in fleetkit.
 - `vm/*.sh`, `turnkey/` — appliance VMs and TurnKey (image imports / out of scope).
 
+Upstream's `.github/` (workflows, issue templates, PocketBase bots) is not
+kept: none of it applies to a Nix catalog. What replaces it is
+`.github/workflows/upstream-apps.yml`, which diffs upstream against this
+tree and opens issues for new, changed and removed scripts, and the
+`port-upstream-app` skill that turns such an issue into a preset + module.
+When a port lands, the upstream `ct/` and `install/` scripts it was ported
+from are copied here so the extractor and future diffs see them — the one
+sanctioned way this directory grows.
+
 Deletion criterion: every catalog entry has `impl != "planned"` or a
 documented `unsupportedReason`.
