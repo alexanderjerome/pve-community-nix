@@ -353,6 +353,27 @@ Not started until Phases 0-5 are merged. Contract for
 - Writing any app module beyond the pilot contract (Phase 6 is a
   separate planning round per tier).
 
+## Status (2026-09-04)
+
+Executed on branch `claude/proxmox-nix-rewrite-plan-qx16ru` of both repos.
+
+| Phase | State | Where |
+|---|---|---|
+| 0 skeleton | done | this repo: flake, schema, mkApp, template, checks, docs, `legacy/` |
+| 1 guest surface | done (commits 1-11 of Appendix A.6) | fleetkit: golden check, prefix lengths, lifecycle/DNS/arch/features/devices/hook, `interfaces` + declared mode, `vm.*`, `import:` images, `defaultDatastore`/`lxcTemplateDatastore`, SDN/VLAN/storage kinds, `lxc_extra_conf`, docs page |
+| 2 host surface | done | fleetkit: `providers.proxmox.hostTweaks` → ansible tasks (microcode, kernel-clean/pin, governor, NIC offload, disk-health, iptag, monitor-all), `ansible-syntax` check |
+| 3 image/first boot | done | fleetkit: `infra.platform.pve.lxc.gpu` + `deviceGids`, `minVersion`, PVE 9 floor in `fleet pve status`; this repo: `apps.base`, device presets |
+| 4 catalog | done | 606 presets extracted, `mkApp`, `fleet apps` CLI, `catalog-json`, `catalog-schema` check |
+| 5 docs/CI | done | mdBook (schema, apps, catalog by category, migration, requirements), `check` + `docs` workflows in both repos |
+| 6 pilots | ported, not live-verified | jellyfin (nixos-service), forgejo (nixos-service + wiring), dockge (oci), rustypaste (package-systemd), opnsense-vm (image); `ported-apps` check evaluates every enabled module |
+
+Still operator-run (needs a PVE 9 node): the live smoke in *Verification*
+steps 3, the one-time provider checks (empty `ip_config`,
+`device_passthrough` gid on an unprivileged CT, `import_from`,
+`proxmox_sdn_*` names at the pinned provider), and flipping each pilot to
+`status = "verified"`. Deprecating fleetkit's legacy network modes
+(A.6 commits 12-13) waits for the origin fleet to migrate.
+
 ## Appendix A — `fleet.compute` gap-fill design (fleetkit)
 
 ### A.0 Ground truth

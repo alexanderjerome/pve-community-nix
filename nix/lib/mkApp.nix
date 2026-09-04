@@ -58,10 +58,15 @@ in
     # The app's own module is switched on by apps.base (static keys there;
     # `apps.${preset.nixModule}` here would make this attrset's names
     # depend on config).
-    fleet.hostsRegistry.${name} = { ... }: {
-      imports = [ nixos ];
-      apps.base.app = app;
-      apps.base.enable = true;
+    # Appliance images (impl = "image") carry no NixOS: no host registry
+    # entry, so colmena never targets them.
+    fleet.hostsRegistry = lib.optionalAttrs (preset.impl != "image") {
+      ${name} = { ... }: {
+        imports = [ nixos ];
+        apps.base.app = app;
+        apps.base.enable = true;
+        infra.platform.pve.lxc.gpu.enable = lib.mkIf (gpu != null && preset.devices.gpu) true;
+      };
     };
   };
 }

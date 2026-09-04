@@ -5,9 +5,17 @@
 # fleet.compute.<name>.devices entries (bpg device_passthrough → PVE devN).
 #
 # Vendor detection is not declarative: the consumer names the GPU vendor
-# in mkApp { gpu = "intel"; } and the preset picks the node list. gid 44
-# (video) matches what the community scripts used; the NixOS platform
-# module pins the guest's video/render gids so both sides agree.
+# in mkApp { gpu = "intel"; } and the preset picks the node list.
+#
+# gids are NixOS' fixed ids (video = 26, render = 303 — see
+# nixos/modules/misc/ids.nix), NOT Debian's 44/104 the community scripts
+# used: fleetkit's infra.platform.pve.lxc.gpu.enable pins the guest groups
+# to exactly these numbers, so a devN entry with gid=26 lands in a real
+# group inside the unprivileged container with no fix-up pass.
+let
+  video = 26;
+  render = 303;
+in
 rec {
   tun = [ { path = "/dev/net/tun"; } ];
 
@@ -15,10 +23,10 @@ rec {
 
   gpu = {
     intel = [
-      { path = "/dev/dri/renderD128"; gid = 44; mode = "0660"; }
-      { path = "/dev/dri/card0"; gid = 44; mode = "0660"; }
+      { path = "/dev/dri/renderD128"; gid = render; mode = "0660"; }
+      { path = "/dev/dri/card0"; gid = video; mode = "0660"; }
     ];
-    amd = gpu.intel ++ [ { path = "/dev/kfd"; gid = 44; mode = "0660"; } ];
+    amd = gpu.intel ++ [ { path = "/dev/kfd"; gid = render; mode = "0660"; } ];
     nvidia = [
       { path = "/dev/nvidia0"; }
       { path = "/dev/nvidiactl"; }

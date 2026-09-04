@@ -45,10 +45,24 @@ fleet deploy nixos apply host jellyfin  # deploy NixOS onto it
 Requires **Proxmox VE 9.x** (the NixOS LXC setup plugin makes first boot
 zero-touch) and the fleetkit toolchain (`nix develop`).
 
+## Pilots (one per implementation tier)
+
+| app | tier | how |
+|---|---|---|
+| `jellyfin` | `nixos-service` | upstream `services.jellyfin`, GPU groups when the host passes `/dev/dri` |
+| `forgejo` | `nixos-service` | upstream `services.forgejo` wired to the fleet domain and port |
+| `dockge` | `oci` | `virtualisation.oci-containers` on a Docker-enabled host |
+| `rustypaste` | `package-systemd` | nixpkgs package + hardened unit, the declarative form of the legacy installer |
+| `opnsense-vm` | `image` | appliance VM from a `download` resource, no NixOS inside |
+
+All 606 catalog entries carry presets; `fleet apps list --status ported`
+shows the modules that exist. Live verification on a PVE 9 node is the
+operator's step (see `PLAN.md`, *Status*).
+
 ## Validation
 
 ```sh
-nix flake check     # catalog-schema · example-consumer · tf-render · docs
+nix flake check     # catalog-schema · example-consumer · tf-render · docs · ported-apps
 nix build .#docs    # options + catalog site
 nix build .#catalog-json
 ```

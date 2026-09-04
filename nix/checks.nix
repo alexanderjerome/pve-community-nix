@@ -15,6 +15,12 @@
 #                        to valid Terraform JSON.
 #   * docs             — the options site builds with warningsAreErrors:
 #                        every option this repo declares has a description.
+#   * ported-apps      — one mkApp host per catalog entry with a nixModule
+#                        (status ported/verified), all on the template's
+#                        provider: every app module's ENABLED config path
+#                        evaluates to a NixOS toplevel and renders Terraform.
+#                        A module that only evaluates while disabled cannot
+#                        pass this.
 
 { pkgs, nixpkgs, fleetkit, self }:
 
@@ -29,6 +35,29 @@ let
   };
 
   catalogJson = self.packages.${pkgs.system}.catalog-json;
+
+  # Every ported entry as an mkApp host (deterministic VMIDs/IPs).
+  catalogData = (import ../nix/lib { inherit lib; }).evalCatalog {
+    fleetSchema = fleetkit.nixosModules.fleetSchema; catalogModules = ../nix/fleet;
+  };
+  ported = lib.attrNames (lib.filterAttrs (_: e: e.nixModule != null || e.impl == "image") catalogData);
+  portedHosts = lib.imap0 (i: app: catalog.lib.mkApp {
+    inherit app;
+    name = "pilot-${app}";
+    compute = {
+      env = "pilot"; stack = "apps"; provider_instance = "proxmox.main";
+      vm_id = 900 + i; node = "pve1"; internal_ip = "192.0.2.${toString (150 + i)}";
+      root_disk_datastore = "local-lvm";
+    } // lib.optionalAttrs (catalogData.${app}.impl == "image") {
+      image = "import:local:import/${app}.img";
+    };
+    gpu = if catalogData.${app}.devices.gpu then "intel" else null;
+  }) ported;
+  pilots = fleetkit.lib.mkFleet {
+    modules = [ (import ../templates/consumer/fleet { inherit catalog; }) ] ++ portedHosts;
+    globalModules = [ catalog.nixosModules.catalog ];
+    backend = { bucket = "example-tofu"; };
+  };
   appsDir = ../nix/modules/apps;
   moduleDirs = lib.attrNames
     (lib.filterAttrs (n: t: t == "directory" && !(lib.hasPrefix "_" n)) (builtins.readDir appsDir));
@@ -85,4 +114,23 @@ in {
   '';
 
   docs = self.packages.${pkgs.system}.docs;
+
+  ported-apps = pkgs.runCommand "catalog-ported-apps-check" {
+    nativeBuildInputs = [ pkgs.jq ];
+    apps = lib.concatStringsSep " " ported;
+    hostsJson = pilots.packages.hostsJson;
+    renders = lib.attrValues
+      (lib.filterAttrs (n: _: lib.hasPrefix "tf-" n && n != "tf-stack-ids") pilots.packages);
+    toplevels = lib.concatStringsSep "\n"
+      (lib.mapAttrsToList
+        (n: c: "${n} ${builtins.unsafeDiscardOutputDependency c.config.system.build.toplevel.drvPath}")
+        pilots.nixosConfigurations);
+  } ''
+    echo "ported apps: $apps"
+    for r in $renders; do
+      jq -e 'has("resource")' "$r" > /dev/null || { echo "render $r is not Terraform JSON"; exit 1; }
+    done
+    echo "$toplevels"
+    touch $out
+  '';
 }

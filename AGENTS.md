@@ -27,7 +27,8 @@ vendoring.
 4. **Attribution travels.** Every entry keeps `upstream.{url,repo,license}`
    and `legacy.{ct,install}` back-references.
 5. **`nix flake check` is the acceptance gate**: `catalog-schema`,
-   `example-consumer`, `tf-render`, `docs`.
+   `example-consumer`, `tf-render`, `docs`, `ported-apps` (every module with
+   status ported evaluates enabled).
 6. **`legacy/` is read-only.** Never fix or extend the bash tree.
 
 ## Discovering the API

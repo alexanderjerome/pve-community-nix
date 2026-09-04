@@ -8,7 +8,7 @@ required settings).
 ## Validation loop
 
 ```bash
-nix flake check                 # catalog-schema · example-consumer · tf-render · docs
+nix flake check                 # catalog-schema · example-consumer · tf-render · docs · ported-apps
 nix build .#docs
 nix build .#catalog-json
 ```
