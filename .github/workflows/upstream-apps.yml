@@ -1,0 +1,41 @@
+# Diff upstream community-scripts/ProxmoxVE against this catalog's legacy
+# copies and file one issue per new / changed / removed script, labelled
+# `upstream-app` (+ upstream:new|changed|removed). The `port-upstream-app`
+# skill turns an issue into a preset + module. Runs after upstream-sync.
+name: upstream-apps
+on:
+  schedule:
+    - cron: "47 4 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Only report; do not open issues"
+        type: boolean
+        default: false
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: upstream-apps
+  cancel-in-progress: true
+jobs:
+  diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: community-scripts/ProxmoxVE
+          ref: main
+          path: upstream
+      - name: diff and file issues
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          python3 tools/upstream-diff.py --upstream upstream --json upstream-findings.json --emit-issues \
+            ${{ inputs.dry_run && '--dry-run' || '' }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: upstream-findings
+          path: upstream-findings.json

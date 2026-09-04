@@ -36,7 +36,7 @@ PLAN.md                 the rewrite plan and its phases
 ## Getting started
 
 ```sh
-nix flake init -t github:alexanderjerome/pve-community-nix/nix#consumer
+nix flake init -t github:alexanderjerome/pve-community-nix#consumer
 # edit fleet/*.nix (providers, network, settings) and fleet/hosts/*.nix
 fleet deploy tf apply home-media        # provision the container(s)
 fleet deploy nixos apply host jellyfin  # deploy NixOS onto it
@@ -58,6 +58,14 @@ zero-touch) and the fleetkit toolchain (`nix develop`).
 All 606 catalog entries carry presets; `fleet apps list --status ported`
 shows the modules that exist. Live verification on a PVE 9 node is the
 operator's step (see `PLAN.md`, *Status*).
+
+## Tracking upstream
+
+`official-community-scripts` mirrors community-scripts/ProxmoxVE
+(`upstream-sync` workflow, daily). `upstream-apps` diffs upstream against
+`legacy/` and opens one issue per new, changed or removed script, labelled
+`upstream-app`. The `port-upstream-app` Claude skill
+(`.claude/skills/`) works such an issue into a preset + module and a PR.
 
 ## Validation
 

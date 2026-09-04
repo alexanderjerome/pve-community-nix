@@ -1,0 +1,27 @@
+# Keep the `official-community-scripts` branch a byte-for-byte mirror of
+# upstream community-scripts/ProxmoxVE main. Fast-forward only: a
+# divergence (someone committed to the mirror) fails loudly.
+name: upstream-sync
+on:
+  schedule:
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: upstream-sync
+  cancel-in-progress: false
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: official-community-scripts
+          fetch-depth: 0
+      - name: fast-forward from upstream
+        run: |
+          git remote add upstream https://github.com/community-scripts/ProxmoxVE.git
+          git fetch upstream main
+          git merge --ff-only upstream/main
+          git push origin HEAD:official-community-scripts
