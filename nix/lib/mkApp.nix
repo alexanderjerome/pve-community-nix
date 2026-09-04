@@ -7,6 +7,10 @@
 #     compute = { vm_id = 120; node = "pve1"; internal_ip = "192.0.2.120";
 #                 provider_instance = "proxmox.main"; env = "home"; stack = "media"; };
 #     nixos   = { time.timeZone = "Europe/Berlin"; };   # extra NixOS config
+#     gpu     = "intel";                   # intel | amd | nvidia — realises the preset's
+#                                          # devices.gpu flag as /dev entries (null = no GPU)
+#     coral   = false;                     # pass /dev/apex_0 when the preset can use it
+#     usbSerial = false;                   # pass /dev/ttyUSB*/ttyACM* when the preset can use them
 #   }) ];
 #
 # Produces:
@@ -16,9 +20,10 @@
 #                                (only when the preset carries a NixOS module)
 #
 # Everything the preset provides is overridable; nothing is prompted.
-{ app, name ? app, compute, nixos ? {} }:
+{ app, name ? app, compute, nixos ? {}, gpu ? null, coral ? false, usbSerial ? false }:
 { config, lib, ... }:
 let
+  devices = import ./devices.nix { inherit lib; };
   presets = config.fleet.catalog.apps;
   preset = presets.${app} or (throw
     "mkApp: no catalog entry \"${app}\" (known: ${lib.concatStringsSep ", " (lib.attrNames presets)})");
@@ -46,6 +51,7 @@ in
         keyctl = lib.mkDefault (!preset.privileged);
       };
       tags = lib.mkDefault ([ "community-catalog" preset.category ] ++ preset.tags);
+      devices = lib.mkDefault (devices.forPreset { inherit preset coral; gpuVendor = gpu; usbSerial' = usbSerial; });
       notes = lib.mkDefault "${preset.title} — from the pve-community-nix catalog (upstream: ${preset.upstream.url})";
     } // compute);
 
