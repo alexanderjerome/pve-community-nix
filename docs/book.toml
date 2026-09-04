@@ -1,0 +1,10 @@
+[book]
+title = "pve-community-nix"
+description = "Declarative NixOS application catalog for Proxmox VE, built on fleetkit — options reference"
+src = "src"
+language = "en"
+
+[output.html]
+git-repository-url = "https://github.com/alexanderjerome/pve-community-nix"
+default-theme = "ayu"
+preferred-dark-theme = "ayu"
