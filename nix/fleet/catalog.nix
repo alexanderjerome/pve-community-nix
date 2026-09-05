@@ -179,6 +179,20 @@ let
   });
 in
 {
+  options.fleet.catalog.hostDefaults = mkOption {
+    type = types.attrsOf types.anything;
+    default = {};
+    example = lib.literalExpression ''
+      {
+        privileged = true;                 # e.g. systemd >= 260 needs it in an unprivileged userns
+        network_mode = "single-external";  # every app on the LAN bridge (per-host `ip`)
+        image = "local:vztmpl/my-nixos-lxc.tar.xz";
+        root_disk_datastore = "local-lvm";
+      }
+    '';
+    description = "fleet.compute values applied to EVERY mkApp host, between the preset's defaults and the per-host `compute` attrset (preset < hostDefaults < compute). The place for fleet-wide facts the presets cannot know: privileged containers, the NIC layout, the LXC template image, the datastore, extra tags.";
+  };
+
   options.fleet.catalog.apps = mkOption {
     type = types.attrsOf appType;
     default = {};

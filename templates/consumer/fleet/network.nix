@@ -36,9 +36,9 @@
     # # fleet DNS serves split-DNS answers for it.
     # search_domains = [ "example.lan" "example.dev" ];
 
-    # # LAN-side (vmbr0) shapes — only for single-external hosts and
-    # # router/netgate VMs:
-    # lan_gateway = "192.0.2.1";
+    # LAN-side (vmbr0) gateway — read by single-external hosts (see
+    # hosts/forgejo.nix) and router/netgate VMs.
+    lan_gateway = "192.0.2.1";
     # lan_cidr = "192.0.2.0/24";      # informational (CLI parity)
     # internal_cidr = "192.0.2.0/24"; # informational (CLI parity)
 

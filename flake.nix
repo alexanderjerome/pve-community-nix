@@ -13,7 +13,7 @@
   #
   # Consumer wiring (see templates/consumer/flake.nix):
   #   fleetkit.lib.mkFleet {
-  #     modules       = [ ./fleet catalog.fleetModules.catalog ];
+  #     modules       = [ ./fleet catalog.nixosModules.fleetCatalog ];
   #     globalModules = [ catalog.nixosModules.catalog ];
   #     …
   #   }
@@ -42,7 +42,11 @@
     # Fleet-schema side: the catalog schema (fleet.catalog.apps.*) plus
     # every preset under nix/catalog/. Pure data — safe in fleetkit's
     # fleet eval (no pkgs, no NixOS options).
-    fleetModules.catalog = ./nix/fleet;
+    # The fleet.catalog schema + presets: a plain module usable in fleetkit's
+    # fleet eval AND as a NixOS module (it declares options only). Under
+    # nixosModules because that is the conventional flake output for
+    # module-system modules; `fleetModules` was not one Nix recognises.
+    nixosModules.fleetCatalog = ./nix/fleet;
 
     # NixOS side: the always-on app base layer (apps.base.*) plus every
     # app module (apps.<name>.*), inert unless enabled by mkApp.

@@ -21,7 +21,7 @@ rewritten so that the same knowledge is *data* and every guest is NixOS:
 ## Layout
 
 ```
-flake.nix               inputs.fleetkit; lib.mkApp; fleetModules.catalog; nixosModules.catalog
+flake.nix               inputs.fleetkit; lib.mkApp; nixosModules.fleetCatalog; nixosModules.catalog
 nix/fleet/              fleet.catalog.apps schema (+ loads nix/catalog/)
 nix/catalog/<app>.nix   one preset per application — pure data
 nix/lib/                mkApp, device presets, evalCatalog
