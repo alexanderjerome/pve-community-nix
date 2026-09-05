@@ -117,7 +117,7 @@ more conventional commits.
    upstream attribution and license, RFC5737 examples only).
 2. New `flake.nix`: inputs `fleetkit` (path/GitHub ref), `nixpkgs.follows
    = "fleetkit/nixpkgs"`. Outputs: `lib.mkApp`, `nixosModules.catalog`,
-   `fleetModules.catalog` (adds `fleet.catalog.*`), `packages.{docs,
+   `nixosModules.fleetCatalog` (adds `fleet.catalog.*`), `packages.{docs,
    catalog-json}`, `checks.*`, `templates.consumer`.
 3. `templates/consumer/` = a copy of fleetkit's `templates/minimal`
    plus one `mkApp` host. This is the catalog's `example-fleet`

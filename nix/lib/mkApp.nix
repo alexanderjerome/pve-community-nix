@@ -15,7 +15,8 @@
 #
 # Produces:
 #   fleet.compute.<name>       — kind/cores/RAM/disk/privileged/features from
-#                                the preset, overridden by `compute`
+#                                the preset, then fleet.catalog.hostDefaults
+#                                (fleet-wide facts), then `compute` (per host)
 #   fleet.hostsRegistry.<name> — apps.base.app = <app>; apps.<app>.enable = true
 #                                (only when the preset carries a NixOS module)
 #
